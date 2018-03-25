@@ -1,0 +1,217 @@
+﻿@model PagedList.IPagedList<ProjectEng.Models.Project>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<link href="~/Content/DashboardStyle.css" rel="stylesheet" />
+<style type="text/css">
+    .col-md-7 {
+        width: 28%;
+    }
+
+    .modal-header, h4, .close {
+        background-color: #5cb85c;
+        color: white !important;
+        text-align: center;
+        font-size: 30px;
+    }
+
+    .modal-body {
+        background-color: white;
+    }
+
+    .modal-footer {
+        background-color: #f9f9f9;
+    }
+</style>
+
+
+<div class="jumbotron">
+    <h1>DashBoard</h1>
+</div>
+<div class="row">    
+    <div class="col-md-9">
+        <form class="search-form" action="~/Home/Index" role="form">
+            <table>
+                <tr>
+                    <td>Customer:</td>
+                    <td>@Html.DropDownList("CustomerId", null, new { @class = "form-control" })</td>
+                    <td>PM:</td>
+                    <td>@Html.DropDownList("PMStaff", null, new { @class = "form-control" })</td>
+                    <td>Status:</td>
+                    <td>@Html.DropDownList("Status", null, new { @class = "form-control" })</td>
+                    <td><input type="submit" value="Search" class="btn btn-default" /></td>
+                    <td>                        
+                        <a href="#" id="btnexport2" class="btn btn-danger">PDF</a>
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+    </div>
+</div><br />
+
+
+<div class="row">
+    <div class="col-md-12">      
+        <table class="table table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>Project No</th>
+                    <th>@Html.ActionLink("Customer Name", "Index", new { sortparam = ViewBag.CustomerName, Customeridpage = ViewBag.Customeridpage, PMStaffpage = ViewBag.PMStaffpage, Statuspage = ViewBag.statuspage })</th>
+                    <th>CM</th>
+                    <th>PM</th>
+                    <th>PDE</th>                    
+                    <th>QE</th>
+                    <th>DR</th>
+                    <th>P Name</th>
+                    <th>Status</th>
+                    <th>D Date</th>
+                    <th>L Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ProjectID</td>
+                        <td>@item.Customers.CustomerName</td>                        
+                        <td>@item.ProjectStaffs.CMStaff</td>
+                        <td>@item.ProjectStaffs.PMStaff</td>
+                        <td>@item.ProjectStaffs.PDEStaff</td>
+                        <td>@item.ProjectStaffs.QEStaff</td>
+                        <td>@item.ProjectStaffs.DRStaff</td>
+                        <td>@item.Description</td>
+                        <td>@item.Status</td>
+                        <td>@item.DueDate.ToShortDateString()</td>
+                        <td>@item.LaunchDate.ToShortDateString()</td>
+                        <td>
+                            <a href="#" class="btn btn-default btn_task" data-value="@item.ProjectID">Task view</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("Index",
+                                                                   new { page, Customeridpage = ViewBag.Customeridpage, PMStaffpage = ViewBag.PMStaffpage, Statuspage = ViewBag.statuspage, sortparam = ViewBag.CurrentFilter }))
+    </div>
+    
+</div>
+
+
+<!--Modal-->
+<div id="fsModal"
+     class="modal animated bounceIn"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="myModalLabel"
+     aria-hidden="true">
+
+    <!--dialog-->
+    <div class="modal-dialog">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h1 id="myModalLabel" class="modal-title">
+                    Task Project
+                </h1>
+            </div> <!--Header-->
+
+            <!--body-->
+            <div class="modal-body">
+                               
+                <div id="contenidomodal">
+
+                </div>
+
+            </div><!--body-->
+        </div>
+    </div>
+
+
+    
+</div>
+
+<!--modal Pdf-->
+<div class="modal fade" id="modalpdf" role="dialog">
+    <div class="modal-dialog">
+        <!--Modal Content-->
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+            <h4><span class="glyphicon glyphicon-paperclip">Put the page Number</span></h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="staffname"><span class="glyphicon glyphicon-user"></span> Enter number page:</label>
+                <input type="text" class="form-control" id="numberpage" placeholder="Enter Number page">
+            </div>
+            <button type="button" id="buttonSave" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Print PDF</button>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section css{
+    @Styles.Render("~/Content/themes/base/all.css")
+}
+
+
+@section scripts {
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/Scripts/jquery-ui-1.12.1.min.js")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(".btn_task").click(function () {
+                var id = $(this).data("value");
+
+                $("#contenidomodal").load("/eng/Task/Details/" + id, function () {
+                     $("#fsModal").modal("show");
+                });
+
+            });
+
+            $('#btnexport').click(function () {
+                var numberpage = $("#numberpage").val();
+
+                var page = '../Home/DashboardToPdf?page='+numberpage;
+                    window.location.href = page;
+                    //window.location = '/Reports/ExportInventory';
+
+            });
+
+            $("#btnexport2").click(function () {
+                $("#modalpdf").modal("show");
+            });
+
+            $("#buttonSave").click(function () {
+                var numberpage = $("#numberpage").val();
+
+                if (isNaN(numberpage)) {
+                    alert('The Field is only numeric!');
+                    return false;
+                }
+
+                var page = '/eng/Home/DashboardToPdf?page=' + numberpage;
+                window.location.href = page;
+                //window.location = '/Reports/ExportInventory';
+                $("#modalpdf").modal("hide");
+            });
+
+        });
+    </script>    
+  }

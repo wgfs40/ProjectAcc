@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ProjectEng.Models.Task>
+<table class="table table-bordered table-hover table-responsive">
+        <tr>
+            <th>Project</th>
+            <th>Create</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Completion Date</th>
+            <th>Responsible</th>
+            <th>Current State</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProjectID</td>
+                <td>@item.Create.ToShortDateString()</td>
+                <td>@item.Description</td>
+                <td>@if (item.DueDate != null)
+                {
+                        @item.DueDate.Value.ToShortDateString();
+                }
+                </td>
+                <td>@if (item.CompletedDate != null)
+                { 
+                        @item.CompletedDate.Value.ToShortDateString();
+                }
+                </td>
+                <td>@item.Responsable</td>
+                <td>@item.CurrentState</td>
+            </tr>
+        }
+    </table>
+

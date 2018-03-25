@@ -1,0 +1,48 @@
+﻿@model PagedList.IPagedList<ProjectEng.Models.Project>
+
+<link href="@Server.MapPath("~/Content/bootstrap.min.css")" rel="stylesheet">
+
+<img src=@Server.MapPath(" ~/images/logo.jpg") alt="logo" width="403" height="100" class="pull-right" />
+<h2 class="h2">DashBoard</h2>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>Project No</th>
+                    <th>Customer Name</th>
+                    <th>CM</th>
+                    <th>PM</th>
+                    <th>PDE</th>
+                    <th>QE</th>
+                    <th>DR</th>
+                    <th>P Name</th>
+                    <th>Status</th>
+                    <th>D Date</th>
+                    <th>L Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ProjectID</td>
+                        <td>@item.Customers.CustomerName</td>
+                        <td>@item.ProjectStaffs.CMStaff</td>
+                        <td>@item.ProjectStaffs.PMStaff</td>
+                        <td>@item.ProjectStaffs.PDEStaff</td>
+                        <td>@item.ProjectStaffs.QEStaff</td>
+                        <td>@item.ProjectStaffs.DRStaff</td>
+                        <td>@item.Description</td>
+                        <td>@item.Status</td>
+                        <td>@item.DueDate.ToShortDateString()</td>
+                        <td>@item.LaunchDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
+</div>
+
+

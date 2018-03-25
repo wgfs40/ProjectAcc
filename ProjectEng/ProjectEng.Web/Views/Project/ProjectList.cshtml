@@ -1,0 +1,60 @@
+﻿@model PagedList.IPagedList<ProjectEng.Models.Project>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "ProjectList";
+}
+
+<h2>Project List</h2>
+<div class="row">
+    <div class="col-md-3">
+        @Html.ActionLink("Create Project", "CreateProject", null, new { @class = "btn btn-default" })        
+    </div>
+    <div class="col-md-9"> 
+        <form class="search-form" action="~/Project/ProjectList" role="form">
+            <table>
+                <tr>
+                    <td>Customer:</td>
+                    <td>@Html.DropDownList("CustomerId", null, new { @class = "form-control" })</td>
+                    <td>PM:</td>
+                    <td>@Html.DropDownList("PMStaff",null, new { @class = "form-control" })</td>
+                    <td>Status:</td>
+                    <td>@Html.DropDownList("Status", null, new { @class = "form-control"})</td>
+                    <td><input type="submit" value="Search" class="btn btn-default" /></td>
+                </tr>
+            </table>
+            
+        </form>
+    </div>
+</div><br />
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Project #</th>
+        <th>Ref</th>
+        <th>@Html.ActionLink("Customer", "ProjectList", new { sortparam = ViewBag.CustomerName, Customeridpage = ViewBag.Customeridpage, PMStaffpage = ViewBag.PMStaffpage, Statuspage = ViewBag.statuspage })</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Launch Date</th>
+        <th>Task</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.ProjectID</td>
+            <td>@item.Ref</td>
+            <td>@item.Customers.CustomerName</td>
+            <td>@item.Description</td>
+            <td>@item.Status</td>
+            <td>@item.DueDate.ToShortDateString()</td>
+            <td>@item.LaunchDate.ToShortDateString()</td>
+            <td>@Html.ActionLink("Add Task", "CreateTask", "Task", new { ProjectId = item.ProjectID, PMStaff = item.ProjectStaffs.PMStaff }, new { @class = "btn btn-default" })
+            | @Html.ActionLink("Edit", "Edit", "Project", new { id = item.ProjectID, PMStaff = item.ProjectStaffs.PMStaff }, new { @class = "btn btn-default" }) 
+            | @Html.ActionLink("View Task", "Index", "Task", new { id = item.ProjectID, PMStaff = item.ProjectStaffs.PMStaff }, new { @class = "btn btn-default" })</td>
+        </tr>
+    }
+</table>
+<br />
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("ProjectList",
+                      new { page, Customeridpage = ViewBag.Customeridpage, PMStaffpage = ViewBag.PMStaffpage, Statuspage = ViewBag.statuspage, sortparam = ViewBag.CurrentFilter }))

@@ -1,0 +1,18 @@
+﻿@model ProjectEng.Models.User
+
+
+<br />
+<div class="loginmodal-container">
+    <h1>Login to Your Account</h1><br>
+    @using (Html.BeginForm())
+    {        
+        @Html.TextBoxFor(model => model.Username, new { @class="form-control", placeholder = "Username" })
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Password" })
+
+        <input type="submit" class="btn login loginmodal-submit" value="Login" />
+
+    }
+    <div class="login-help">
+        <a href="#">Register</a> 
+    </div>
+</div>

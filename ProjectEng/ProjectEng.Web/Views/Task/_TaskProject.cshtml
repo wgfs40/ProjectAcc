@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ProjectEng.Models.Task>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="h2">List Task</h2>
+<link href="@Server.MapPath("~/Content/bootstrap.min.css")" rel="stylesheet">
+
+<img src=@Server.MapPath(" ~/images/logo.jpg") alt="logo" width="403" height="100" class="pull-right" />
+
+<table class="table table-bordered table-hover table-responsive">
+    <tr>
+        <th>Project</th>
+        <th>Description</th>
+        <th>Due Date</th>
+        <th>Completion Date</th>
+        <th>Current State</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.ProjectID</td>
+            <td>@item.Description</td>
+            <td>@if (item.DueDate != null)
+            {@item.DueDate.Value.ToShortDateString();
+            }</td>
+            <td>@if (item.CompletedDate != null)
+            { @item.CompletedDate.Value.ToShortDateString();
+            }</td>
+            <td>@item.CurrentState</td>
+        </tr>
+    }
+</table>

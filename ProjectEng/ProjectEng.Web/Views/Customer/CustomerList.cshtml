@@ -1,0 +1,23 @@
+﻿@model IEnumerable<ProjectEng.Models.Customer>
+@{
+    ViewBag.Title = "CustomerList";
+}
+
+<h2>Customer List</h2>
+
+@Html.ActionLink("Create Customer", "CustomerCreate", null, new { @class="btn"})
+<hr />
+
+<table class="table table-bordered table-hover table-responsive">
+    <tr>
+        <td>Customer ID</td>
+        <td>Customer Name</td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.CustomerId</td>
+            <td>@item.CustomerName</td>
+        </tr>
+    }
+</table>
